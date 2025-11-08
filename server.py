@@ -45,24 +45,28 @@ async def create_upload_file(file: UploadFile):
 
 @app.get("/solve_shortest_path/start_node_id={start_node_id}&end_node_id={end_node_id}")
 async def get_shortest_path(start_node_id: str, end_node_id: str):
-    #TODO: implement this function
+    # TODO: implement this function
     global active_graph 
-    # ---  Dijkstra ---
+
+    # --- Dijkstra ---
     start_node = active_graph.nodes[start_node_id]
     result_graph = dijkstra(active_graph, start_node)
 
     path = []
     current = active_graph.nodes[end_node_id]
+    total_distance = current.dist 
+
     while current is not None:
-        path.insert(0, current.id) 
+        path.insert(0, current.id)
         current = current.prev
 
     if len(path) == 1 and path[0] != start_node_id:
-        return {"shortest_path": [], "message": "No path found"}
+        return {"shortest_path": [], "total_distance": None, "message": "No path found"}
 
-    return {"shortest_path": path}
-
-
+    return {
+        "shortest_path": path,
+        "total_distance": total_distance
+    }
 
 if __name__ == "__main__":
     print("Server is running at http://localhost:8080")
